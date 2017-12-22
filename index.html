@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	    <meta name="description" content="">
+	    <meta name="author" content="">
+	    
+
+	    <title>Livestock Disease Outbreaks (Test) </title>
+
+	    <!--Bootstrap core CSS-->
+	    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+	    <link rel="stylesheet" href="css/leaflet.defaultextent.css" />
+	    <link rel="stylesheet" href="css/leaflet.label.css" />
+	    <link rel="stylesheet" href="css/MarkerCluster.css" />
+	    <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+
+        <script src="js/data/outbreak.js"></script>
+        <script src="js/data/dzongkhagJson.js"></script>
+
+	    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+        <style type="text/css">
+            
+            /*#map {
+                position: absolute;
+                width: 96%;
+                min-height:500px;
+                margin: 0;
+                padding: 20px;
+                border: 1px solid #E5E5E5;
+                border-radius: 8px;
+            }*/
+
+          #map {
+              position: inherit;
+              width: 100%;
+              min-height: 480px ;
+              margin: 0;
+              padding: 20px;
+              border: 1px solid #E5E5E5;
+              border-radius: 8px;
+          }
+
+          body {
+              padding-top: 10px;
+              /*background-color: #F1EEF6;*/
+              background-color: #d9dde0;
+              /*background-color: #eaf1f6;*/
+          }
+
+          .navbar {
+              min-height: 80px;
+          }
+
+
+
+          .row {
+              margin-top: 0px;
+              margin-bottom: 0px;
+          }
+
+
+          .well {
+              background: rgb(200, 220, 225);
+          }
+
+
+
+          .list-group-item.color-scheme {
+              border: none;
+              padding: 2px 15px;
+              margin-bottm: 0px;
+              padding-bottom: 0px;
+          }
+
+          
+          .textLabelclass {
+              white-space: nowrap;
+              font-weight: 200;
+              text-shadow: 0 0 0.1em black, 0 0 0.1em black, 0 0 0.1em black,0 0 0.1em black,0 0 0.1em;
+              color: yellow;
+              
+              border-width:1px;
+                          }
+
+          
+         
+
+      </style>
+
+      
+	</head>
+
+	<body>
+     	<div class="container">
+          <!-- Static navbar -->
+          	<nav class="navbar navbar-default">
+              	<div class="container-fluid">
+                  	<div class="navbar-header">
+                      	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                          	<span class="sr-only">Toggle navigation</span>
+                          	<span class="icon-bar"></span>
+                          	<span class="icon-bar"></span>
+                          	<span class="icon-bar"></span>
+                      	</button>
+              			<a class="navbar-brand" href="#" style="font-size:28px;margin-top:10px;">Livestock Disease Outbreaks (TEST)</a>                    
+                  	</div>
+                 	<div id="navbar" class="navbar-collapse collapse">
+                      	<ul class="nav navbar-nav navbar-right"></ul>
+                  	</div>
+                </div>
+            </nav>
+        </div>
+		
+		<div class="container">
+			<div class="row" style="margin-top:0px;">
+				<div class="col-xs-12 col-sm-3">
+					<div class="panel panel-default fixed-panel">
+						<div class="panel-body" style="height: 480px; font-size: 90%">
+							<table style="font-size: 80%">
+								<thead><b>Diseases:</b></thead>
+								<tr>
+									<td>
+										<select class="form-control" id="disease" onchange="updateOutbreakLayer();">
+                                          	<option value="All">All</option>
+                                          	<option value="Anthrax">Anthrax</option>
+                                          	<option value="Bird Flu">Bird Flu</option>
+                                          	<option value="BQ">Black Quarter</option>
+                                          	<option value="FMD">FMD</option>
+                                          	<option value="Gumboro">Gumboro</option>
+                                          	<option value="HPAI">HPAI</option>
+                                          	<option value="HS">HS</option>
+                                          	<option value="NCD">NCD</option>
+                                          	<option value="ND">ND</option>
+                                          	<option value="PPR">PPR</option>
+                                          	<option value="Rabies">Rabies</option>
+                                      </select>
+									</td>
+								</tr>	
+							</table>
+							<br>
+							<b>Species: </b>
+							<div class="list-group" id="species" style="max-height: 360px; overflow: auto;">
+								<a href="#" class="list-group-item active" onclick="updateSpecies('All');">All</a>
+                              	<a href="#" class="list-group-item" onclick="updateSpecies('Bird');">Bird</a>
+                              	<a href="#" class="list-group-item" onclick="updateSpecies('Cattle');">Cattle</a>
+                              	<a href="#" class="list-group-item" onclick="updateSpecies('Cat');">Cat</a>
+                              	<a href="#" class="list-group-item" onclick="updateSpecies('Dog');">Dog</a>
+                              	<a href="#" class="list-group-item" onclick="updateSpecies('Goat and Sheep');">Goat and Sheep</a>
+                              	<a href="#" class="list-group-item" onclick="updateSpecies('Horse');">Horse</a>
+                              	<a href="#" class="list-group-item" onclick="updateSpecies('Pig');">Pig</a>
+                              	<a href="#" class="list-group-item" onclick="updateSpecies('Mixed');">Mixed</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-9">
+					<div id="map"></div>
+				</div>
+			</div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="panel panel-default fixed-panel">
+                        <div class="panel-body" style="height: 320px;">
+                            <div style="text-align: center;font-size: 7pt;">
+                                <div class="well well-sm">
+                                    <input type="text" name="yearSlider" id="yearSlider" data-provide="slider" data-slider-ticks="
+                                    [1996, 2005, 2015]"
+                                        data-slider-ticks-labels='["1996", "2005", "2015"]' data-slider-min="1996" data-slider-max="
+                                        2015" data-slider-handle="circle" data-slider-step="1"
+                                        data-slider-value=[2005,2015]
+                                        data-slider-tooltip="always"
+                                        data-slider-focus="true"
+                                        style="width: 90%;margin-top: 30px;"/> 
+                                </div>
+                            </div>
+                            <div id="infoDiv">
+                                <svg height="230">
+                                    <circle id="cCircle" cx="110" cy="90" r="80" stroke="#7cb5ec" stroke-width="1" fill="#7cb5ec">
+                                        <title id="cTitle"></title>
+                                    </circle> 
+                                    <text id="cText" x="95" y="45" font-family="Verdana" font-size="12" fill="blue"></text>
+                                    <circle id="dCircle" cx="110" cy="130" r="40" stroke="#434348" stroke-width="1" fill="#434348">
+                                        <title id="dTitle"></title>
+                                    </circle>
+                                    <text id="dText" x="95" y="130" font-family="Verdana" font-size="12" fill="white"></text>
+                                    <text id="oText" x="25" y="210" font-family="Verdana" font-size="12" fill="black">Total outbreak incidents:</text>
+                                    Sorry, your browser does not support inline SVG.
+                              </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="panel panel-default fixed-panel">
+                        <div class="panel-body" style="height:320px;">
+                            <div id="chartDiv" style="min-width: 310px; height: 300px; margin: 0 auto"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+
+		<script type='text/javascript' src="js/jquery.min.js"></script>
+      	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+      	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+      	<script src="js/leaflet.defaultextent.js"></script>
+      	<script src="js/leaflet.markercluster.js"></script>
+      	<script src="js/leaflet.label.js"></script>
+      	<script src="js/listgroup/listgroup.js"></script>
+      	<link rel="stylesheet" href="css/bootstrap-slider.css">
+      	<script src="js/bootstrap-slider.js"></script>
+      	<script src="http://code.highcharts.com/highcharts.js"></script>
+      	<script src="http://code.highcharts.com/modules/exporting.js"></script>
+      	<script src="js/data/livestock.js"></script>
+
+        <script type='text/javascript'>
+
+            $(document).ready(function () {
+                updateOutbreakLayer();
+                $("yearSlider").slider();
+
+                $('#yearSlider').on('slideStop', function (slideEvt) {
+                    var strRange = $("#yearSlider").val();
+                    console.log(strRange);
+                    minYear = parseInt(strRange.split(',')[0]);
+                    maxYear = parseInt(strRange.split(',')[1]);
+                    updateOutbreakLayer();
+
+                });
+          });
+      </script>
+	</body>
+</html>
